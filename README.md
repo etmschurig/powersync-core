@@ -7,17 +7,20 @@ ETM PowerSync est un **HEMS** (Home Energy Management System) qui coordonne phot
 batterie, pompe à chaleur et borne de recharge sous une seule logique d'optimisation —
 exécutée **en local**, sur votre matériel, sans dépendance cloud obligatoire.
 
-Ce dépôt contient la couche ETM open source bâtie au-dessus de nymea.io. La couche
-d'optimisation avancée (`powersync-optimizer`) est propriétaire et n'est pas distribuée ici.
+Ce dépôt contient la couche ETM open source bâtie au-dessus de nymea.io, ainsi que le
+connecteur GPL (`optimizer-plugin`) vers la logique d'optimisation. Cette logique métier
+elle-même (`powersync-optimizer`) est propriétaire et n'est pas distribuée ici — voir
+l'architecture ci-dessous.
 
 ## Architecture
 
 ```
 nymea (plateforme IoT, GPL3)
-└─ powersync-core (ce dépôt, GPL3)   ← pilotage par règles : surplus, délestage, API
-   └─ powersync-optimizer (propriétaire)   ← arbitrage tarifaire + prédiction (non public)
+└─ powersync-core / plugins (GPL3)        ← tout ce qui est lié à nymea
+   └─ optimizer-plugin (GPL3)             ← connecteur nymea, relaie via socket Unix
+        ⇅  socket Unix (IPC)              ← frontière de licence
+      powersync-optimizer (propriétaire)  ← logique métier : arbitrage, Predict AI (non public)
 ```
-
 ## Installation
 
 Via le dépôt APT signé ETM :
